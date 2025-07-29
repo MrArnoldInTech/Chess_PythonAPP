@@ -2,7 +2,7 @@ import tkinter as tk
 from PIL import Image, ImageTk
 
 BOARD_SIZE = 8
-TILE_SIZE = 64
+TILE_SIZE = 100  # 800 / 8 = 100
 
 # FEN-based simple start position
 START_POSITION = [
@@ -34,6 +34,7 @@ class ChessApp:
                   'bp', 'br', 'bn', 'bb', 'bq', 'bk']
         for piece in pieces:
             img_path = f"images/png/{piece}.png"
+            img = Image.open(img_path).convert("RGBA")
             img = Image.open(img_path).resize((TILE_SIZE, TILE_SIZE))
             self.images[piece] = ImageTk.PhotoImage(img)
 
@@ -43,11 +44,16 @@ class ChessApp:
             for col in range(BOARD_SIZE):
                 x1 = col * TILE_SIZE
                 y1 = row * TILE_SIZE
+                # Light squares yellowish, dark squares green
                 color = "#EEEED2" if (row + col) % 2 == 0 else "#769656"
                 self.canvas.create_rectangle(x1, y1, x1 + TILE_SIZE, y1 + TILE_SIZE, fill=color)
 
                 piece = self.board[row][col]
+                # if piece:
+                    # self.canvas.create_image(x1, y1, anchor="nw", image=self.images[piece])
                 if piece:
+                    # Draw a colored rect behind the piece (debug only)
+                    self.canvas.create_rectangle(x1 + 5, y1 + 5, x1 + TILE_SIZE - 5, y1 + TILE_SIZE - 5, fill="#769656", outline="")
                     self.canvas.create_image(x1, y1, anchor="nw", image=self.images[piece])
 
         if self.selected:
