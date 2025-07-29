@@ -33,18 +33,28 @@ class ChessApp:
         self.root.bind("<Escape>", self.show_closing_message)
 
     def show_closing_message(self, event=None):
-        # Display "Closing..." text in the center
-        text_id = self.canvas.create_text(
+        # Display "Closing..." text in the center with red color
+        self.closing_text_id = self.canvas.create_text(
             BOARD_SIZE * TILE_SIZE // 2,
             BOARD_SIZE * TILE_SIZE // 2,
             text="Closing...",
             font=("Helvetica", 36, "bold"),
-            fill="red"
+            fill="#FF0000"
         )
+        self.fade_step = 0
+        self.fade_out_text()
 
-         # Optionally fade out (not smooth fade but blink)
-        self.root.after(1500, lambda: self.canvas.delete(text_id))  # hide after 1.5 sec
-        self.root.after(2000, self.root.quit)  # quit after 2 seconds
+    def fade_out_text(self):
+        # Fade color from red to light red to transparent
+        if self.fade_step < 20:
+            alpha = int(255 * (1 - self.fade_step / 20))  # 255 to 0
+            color = f"#{alpha:02x}0000"  # Red with decreasing intensity
+            self.canvas.itemconfig(self.closing_text_id, fill=color)
+            self.fade_step += 1
+            self.root.after(100, self.fade_out_text)
+        else:
+            self.canvas.delete(self.closing_text_id)
+            self.root.quit()
 
     def load_images(self):
         pieces = ['wp', 'wr', 'wn', 'wb', 'wq', 'wk',
