@@ -19,7 +19,7 @@ START_POSITION = [
 class ChessApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("Chess GUI")
+        self.root.title("Chess GUI - A new Chapter")
         self.canvas = tk.Canvas(root, width=BOARD_SIZE * TILE_SIZE, height=BOARD_SIZE * TILE_SIZE)
         self.canvas.pack()
         self.images = {}
@@ -28,6 +28,23 @@ class ChessApp:
         self.selected = None
         self.draw_board()
         self.canvas.bind("<Button-1>", self.on_click)
+
+        # Add Escape key to close the app
+        self.root.bind("<Escape>", self.show_closing_message)
+
+    def show_closing_message(self, event=None):
+        # Display "Closing..." text in the center
+        text_id = self.canvas.create_text(
+            BOARD_SIZE * TILE_SIZE // 2,
+            BOARD_SIZE * TILE_SIZE // 2,
+            text="Closing...",
+            font=("Helvetica", 36, "bold"),
+            fill="red"
+        )
+
+         # Optionally fade out (not smooth fade but blink)
+        self.root.after(1500, lambda: self.canvas.delete(text_id))  # hide after 1.5 sec
+        self.root.after(2000, self.root.quit)  # quit after 2 seconds
 
     def load_images(self):
         pieces = ['wp', 'wr', 'wn', 'wb', 'wq', 'wk',
