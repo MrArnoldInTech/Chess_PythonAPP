@@ -2,7 +2,7 @@ import tkinter as tk
 from PIL import Image, ImageTk
 
 BOARD_SIZE = 8
-TILE_SIZE = 100  # 800 / 8 = 100
+TILE_SIZE = 125  # 1000 / 8 = 125
 
 # FEN-based simple start position
 START_POSITION = [
@@ -28,6 +28,9 @@ class ChessApp:
         self.selected = None
         self.draw_board()
         self.canvas.bind("<Button-1>", self.on_click)
+
+        self.root.geometry("1000x1000") #make res to be 1200 fixed while testing. 
+        self.root.resizable(False, False)  # Disable resizing
 
         # Add Escape key to close the app
         self.root.bind("<Escape>", self.show_closing_message)
@@ -58,12 +61,12 @@ class ChessApp:
 
     def load_images(self):
         pieces = ['wp', 'wr', 'wn', 'wb', 'wq', 'wk',
-                  'bp', 'br', 'bn', 'bb', 'bq', 'bk']
+                'bp', 'br', 'bn', 'bb', 'bq', 'bk']
         for piece in pieces:
-            img_path = f"images/png/{piece}.png"
-            img = Image.open(img_path).convert("RGBA")
-            img = Image.open(img_path).resize((TILE_SIZE, TILE_SIZE))
+            img_path = f"images/png/converted/{piece}.png"
+            img = Image.open(img_path).convert("RGBA").resize((TILE_SIZE, TILE_SIZE))
             self.images[piece] = ImageTk.PhotoImage(img)
+
 
     def draw_board(self):
         self.canvas.delete("all")
@@ -72,7 +75,7 @@ class ChessApp:
                 x1 = col * TILE_SIZE
                 y1 = row * TILE_SIZE
                 # Light squares yellowish, dark squares green
-                color = "#EEEED2" if (row + col) % 2 == 0 else "#769656"
+                color = "#616062" if (row + col) % 2 == 0 else "#769656"
                 self.canvas.create_rectangle(x1, y1, x1 + TILE_SIZE, y1 + TILE_SIZE, fill=color)
 
                 piece = self.board[row][col]
@@ -80,7 +83,7 @@ class ChessApp:
                     # self.canvas.create_image(x1, y1, anchor="nw", image=self.images[piece])
                 if piece:
                     # Draw a colored rect behind the piece (debug only)
-                    self.canvas.create_rectangle(x1 + 5, y1 + 5, x1 + TILE_SIZE - 5, y1 + TILE_SIZE - 5, fill="#769656", outline="")
+                    self.canvas.create_rectangle(x1 + 5, y1 + 5, x1 + TILE_SIZE - 5, y1 + TILE_SIZE - 5, outline="")
                     self.canvas.create_image(x1, y1, anchor="nw", image=self.images[piece])
 
         if self.selected:
